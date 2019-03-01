@@ -8,9 +8,8 @@ public class Application {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
         ToDoRepository toDoRepository = new NaiveToDoRepositoryImpl();
-        ToDoGui toDoGui = new ToDoGui(scanner, toDoRepository);
+        ToDoGui toDoGui = new ToDoGui(toDoRepository);
 
         while (true){
             toDoGui.showMenu();

@@ -2,15 +2,14 @@ package gui;
 
 import java.util.Scanner;
 
+import model.ToDo;
 import persistance.ToDoRepository;
 
 public class ToDoGui {
 
-    private final Scanner scanner;
     private final ToDoRepository toDoRepository;
 
-    public ToDoGui(Scanner scanner, ToDoRepository toDoRepository) {
-        this.scanner = scanner;
+    public ToDoGui(ToDoRepository toDoRepository) {
         this.toDoRepository = toDoRepository;
     }
 
@@ -43,7 +42,11 @@ public class ToDoGui {
     }
 
     private void add() {
-        //todo implement
+        System.out.println("Give me text");
+        String message = new Scanner(System.in).nextLine();
+        ToDo todo = new ToDo(message);
+        toDoRepository.add(todo);
+
     }
 
     private void remove() {
@@ -58,7 +61,9 @@ public class ToDoGui {
 
     private void show() {
         int id = selectShowOption();
-        //     todo: implement   toDoRepository.get(id)
+        ToDo toDo = toDoRepository.get(id);
+        System.out.println(toDo.getMessage());
+
     }
 
     private int selectShowOption() {
@@ -77,6 +82,6 @@ public class ToDoGui {
     }
 
     private int getInputFromUser() {
-        return scanner.nextInt();
+        return new Scanner(System.in).nextInt();
     }
 }

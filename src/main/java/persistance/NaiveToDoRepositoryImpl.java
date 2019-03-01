@@ -16,7 +16,9 @@ public class NaiveToDoRepositoryImpl implements ToDoRepository {
 
     @Override
     public void add(ToDo toDo) {
-        todos.put(counter.getAndIncrement(), toDo);
+        long counter = this.counter.getAndIncrement();
+        toDo.setId(counter);
+        todos.put(counter, toDo);
     }
 
     @Override
