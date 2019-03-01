@@ -1,26 +1,28 @@
 package gui;
 
-import java.util.Scanner;
+import java.util.Collection;
 
+import controlers.ToDoService;
 import model.ToDo;
-import persistance.ToDoRepository;
 
 public class ToDoGui {
 
-    private final ToDoRepository toDoRepository;
+    private final ToDoService toDoService;
+    private final InputProvider inputProvider;
 
-    public ToDoGui(ToDoRepository toDoRepository) {
-        this.toDoRepository = toDoRepository;
+    public ToDoGui(ToDoService toDoService, InputProvider inputProvider) {
+        this.toDoService = toDoService;
+        this.inputProvider = inputProvider;
     }
 
     public void showMenu() {
         System.out.println("Select Available option");
         System.out.println("1) Add ToDo");
-        System.out.println("2) Change ToDo");
-        System.out.println("3) Remove ToDo");
+        System.out.println("2) Remove ToDo");
+        System.out.println("3) Change ToDo");
         System.out.println("4) Show All ToDos");
 
-        GuiOption guiOption = GuiOption.getByCode(getInputFromUser());
+        GuiOption guiOption = GuiOption.getByCode(inputProvider.getNumber());
         selectMainOption(guiOption);
     }
 
@@ -43,45 +45,38 @@ public class ToDoGui {
 
     private void add() {
         System.out.println("Give me text");
-        String message = new Scanner(System.in).nextLine();
-        ToDo todo = new ToDo(message);
-        toDoRepository.add(todo);
-
+        String message = inputProvider.getText();
+        toDoService.add(message);
     }
 
     private void remove() {
         int id = selectRemoveOption();
-        toDoRepository.remove(id);
+        toDoService.remove(id);
     }
 
     private void change() {
         int id = selectChangeOption();
-        //    todo: implement    toDoRepository.change(id);
+        System.out.println("Put new text: ");
+        String text = inputProvider.getText();
+        toDoService.change(id, text);
     }
 
     private void show() {
-        int id = selectShowOption();
-        ToDo toDo = toDoRepository.get(id);
-        System.out.println(toDo.getMessage());
-
+        Collection<ToDo> toDos = toDoService.getAll();
+        toDos.forEach(toDo -> showToDo(toDo));
     }
 
-    private int selectShowOption() {
-        System.out.println("Which to show?");
-        return getInputFromUser();
+    private void showToDo(ToDo toDo) {
+        System.out.println(toDo.getId() + " - " + toDo.getMessage());
     }
 
     private int selectRemoveOption() {
         System.out.println("Which to remove?");
-        return getInputFromUser();
+        return inputProvider.getNumber();
     }
 
     private int selectChangeOption() {
         System.out.println("Which to change?");
-        return getInputFromUser();
-    }
-
-    private int getInputFromUser() {
-        return new Scanner(System.in).nextInt();
+        return inputProvider.getNumber();
     }
 }

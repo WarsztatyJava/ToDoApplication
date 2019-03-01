@@ -3,32 +3,32 @@ package persistance;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import model.ToDo;
 
 public class NaiveToDoRepositoryImpl implements ToDoRepository {
 
-    private static final AtomicLong INITIAL = new AtomicLong(1);
-
     private final Map<Long, ToDo> todos = new HashMap<>();
-    private AtomicLong counter = INITIAL;
+    private final HoleObservable holeObservable;
+
+    public NaiveToDoRepositoryImpl(HoleObservable holeObservable) {
+        this.holeObservable = holeObservable;
+    }
 
     @Override
     public void add(ToDo toDo) {
-        long counter = this.counter.getAndIncrement();
-        toDo.setId(counter);
-        todos.put(counter, toDo);
+        todos.put(toDo.getId(), toDo);
     }
 
     @Override
     public void change(long id, ToDo toDo) {
-        todos.put(id, toDo);
+        todos.put(toDo.getId(), toDo);
     }
 
     @Override
     public void remove(long id) {
         todos.remove(id);
+        holeObservable.updateSubscribers(id);
     }
 
     @Override
@@ -44,6 +44,5 @@ public class NaiveToDoRepositoryImpl implements ToDoRepository {
     @Override
     public void removeAll() {
         todos.clear();
-        counter = new AtomicLong(1);
     }
 }

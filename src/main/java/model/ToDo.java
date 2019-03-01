@@ -9,10 +9,6 @@ public class ToDo {
         this.message = message;
     }
 
-    public ToDo(String message) {
-        this.message = message;
-    }
-
     public long getId() {
         return id;
     }
